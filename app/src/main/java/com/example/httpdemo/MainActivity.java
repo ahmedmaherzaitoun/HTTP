@@ -110,6 +110,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     }).start();
                 }else{
                     result.setText("No Internet Connection");
+                    Toast.makeText(MainActivity.this, "No Internet Connection", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -156,6 +157,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         HttpURLConnection httpURLConnection = null;
         String res = "" ;
         StringBuilder content = new StringBuilder();
+        StringBuilder headersContent = new StringBuilder();
+
         BufferedReader br = null;
         try {
             URL urlGET = new URL(urlET.getText().toString() );
@@ -172,15 +175,16 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             headersMap.clear();
 
             // get headers
-            content.append(getRequestHeaders(httpURLConnection));
-            content.append(getHeaderFields(httpURLConnection));
+            headersContent.append(getRequestHeaders(httpURLConnection));
+            headersContent.append(getHeaderFields(httpURLConnection));
 
             br = new BufferedReader(new InputStreamReader(httpURLConnection.getInputStream()));
 
             // get response code
             int code = httpURLConnection.getResponseCode();
             String line;
-            content.append("\n2. Response code: " + code + "\n");
+            content.append("1. Response code: " + code + "\n");
+            content.append(headersContent.toString());
             content.append("\n3. Request body:\n");
 
             while ((line = br.readLine()) != null) {
@@ -210,6 +214,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         HttpURLConnection httpURLConnection = null;
         String res = "" ;
         StringBuilder content = new StringBuilder();
+        StringBuilder headersContent = new StringBuilder();
 
         postRequestBody = postRequestBodyET.getText().toString();
         String postRequest = postRequestBody;
@@ -232,22 +237,23 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
             //get request headers
             //cant write request body after response has bean read
-            content.append(getRequestHeaders(httpURLConnection) );
+            headersContent.append(getRequestHeaders(httpURLConnection) );
 
-            //send a post Request
+            // Writing the post data to the HTTP request body
             try (DataOutputStream wr = new DataOutputStream(httpURLConnection.getOutputStream())) {
                 wr.write(postData);
             }
             //get Header Fields
            //Cannot access request header fields after connection is set
 
-            content.append(getHeaderFields(httpURLConnection) );
+            headersContent.append(getHeaderFields(httpURLConnection) );
             BufferedReader br = new BufferedReader(new InputStreamReader(httpURLConnection.getInputStream()));
 
             //get Response code
             int code = httpURLConnection.getResponseCode();
             res = code + "";
-            content.append("\n2. Response code: " + code + "\n");
+            content.append("1. Response code: " + code + "\n");
+            content.append(headersContent.toString());
 
             //get body
             String line;
@@ -274,9 +280,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
 
     private String getRequestHeaders(HttpURLConnection httpURLConnection){
+        // Cannot access request header fields after connection is set
         StringBuilder content = new StringBuilder();
 
-        content.append("1. Headers: \n");
+        content.append("2. Headers: \n");
         int cnt = 0 ;
         for (Map.Entry<String, List<String>> entries : httpURLConnection.getRequestProperties().entrySet()) {
             if( cnt > 0 ){
