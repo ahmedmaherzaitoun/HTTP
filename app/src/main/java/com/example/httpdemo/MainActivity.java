@@ -91,12 +91,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     new Thread(new Runnable() {
                         @Override
                         public void run() {
-                            String resultstr;
+                            String resultstr ;
                             if (requestType == "GET") {
                                 resultstr = doGET();
                             } else {
                                 resultstr = doPOST();
-
                             }
                             handler.post(new Runnable() {
                                 @Override
@@ -151,8 +150,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         postRequestBodyET = findViewById(R.id.et_parms);
         result = findViewById(R.id.tv_response);
         result.setMovementMethod(new ScrollingMovementMethod());
-
-
     }
 
     public String doGET(){
@@ -199,7 +196,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             content.delete(0 ,content.length());
             content.append("Error code: 500\n" + status );
             res = content.toString();
-
         }finally {
             httpURLConnection.disconnect();
         }
@@ -210,13 +206,14 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
 
     public String doPOST() {
+
         HttpURLConnection httpURLConnection = null;
         String res = "" ;
         StringBuilder content = new StringBuilder();
 
         postRequestBody = postRequestBodyET.getText().toString();
-        String urlParameters = postRequestBody;
-        byte[] postData = urlParameters.getBytes(StandardCharsets.UTF_8);
+        String postRequest = postRequestBody;
+        byte[] postData = postRequest.getBytes(StandardCharsets.UTF_8);
 
         try {
 
